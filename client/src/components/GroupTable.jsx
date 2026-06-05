@@ -1,23 +1,70 @@
-const groups = {
-  A:[{n:"Brazil",p:2,gd:4,pts:6},{n:"Germany",p:2,gd:1,pts:3},{n:"Japan",p:2,gd:-2,pts:2},{n:"Morocco",p:2,gd:-3,pts:0}],
-  B:[{n:"France",p:2,gd:3,pts:6},{n:"Argentina",p:2,gd:2,pts:4},{n:"Mexico",p:2,gd:-1,pts:1},{n:"Poland",p:2,gd:-4,pts:0}],
-  C:[{n:"Spain",p:2,gd:3,pts:5},{n:"England",p:2,gd:1,pts:4},{n:"Croatia",p:2,gd:-1,pts:1},{n:"Senegal",p:2,gd:-3,pts:0}],
-  D:[{n:"Portugal",p:2,gd:4,pts:6},{n:"Netherlands",p:2,gd:1,pts:3},{n:"Uruguay",p:2,gd:-2,pts:1},{n:"Ecuador",p:2,gd:-3,pts:0}],
-  E:[{n:"Belgium",p:2,gd:2,pts:4},{n:"USA",p:2,gd:1,pts:4},{n:"Wales",p:2,gd:-1,pts:1},{n:"Iran",p:2,gd:-2,pts:0}],
-  F:[{n:"Denmark",p:2,gd:3,pts:6},{n:"Tunisia",p:2,gd:0,pts:3},{n:"Australia",p:2,gd:-1,pts:1},{n:"S. Arabia",p:2,gd:-2,pts:0}],
-}
-
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function GroupTable() {
-  const [active, setActive] = useState('A')
+  const [active, setActive] = useState('Group A')
+  const [groups, setGroups] = useState({})
+  const [loading, setLoading] = useState(true)
+
+  const fetchTeams = () => {
+    fetch('http://localhost:5000/api/teams')
+      .then(res => res.json())
+      .then(data => {
+        const grouped = {}
+        data.forEach(team => {
+          if (!team.group) return
+          if (!grouped[team.group]) grouped[team.group] = []
+          
+          const stats = team.stats || {}
+          const played = stats.played || 0
+          const points = stats.points || 0
+          const gd = (stats.goalsFor || 0) - (stats.goalsAgainst || 0)
+
+          grouped[team.group].push({
+            n: team.name,
+            p: played,
+            gd: gd,
+            pts: points
+          })
+        })
+
+        // Sort each group
+        Object.keys(grouped).forEach(g => {
+          grouped[g].sort((a, b) => {
+            if (b.pts !== a.pts) return b.pts - a.pts
+            return b.gd - a.gd
+          })
+        })
+
+        setGroups(grouped)
+        setLoading(false)
+        if (Object.keys(grouped).length > 0 && !grouped[active]) {
+          setActive(Object.keys(grouped).sort()[0])
+        }
+      })
+      .catch(err => {
+        console.error('Failed to fetch teams for group table:', err)
+        setLoading(false)
+      })
+  }
+
+  useEffect(() => {
+    fetchTeams()
+    const interval = setInterval(fetchTeams, 15000) // Poll every 15 seconds
+    return () => clearInterval(interval)
+  }, [active])
+
+  if (loading) return <div className="bg-[#11141a] rounded-2xl p-5 text-white/50 text-xs">Loading groups...</div>
+  if (Object.keys(groups).length === 0) return <div className="bg-[#11141a] rounded-2xl p-5 text-white/50 text-xs">No group data available</div>
+
+  // Make sure active group exists
+  const displayGroup = groups[active] || Object.values(groups)[0]
 
   return (
     <div className="bg-[#11141a] border border-white/10 rounded-2xl p-5">
       <p className="text-xs text-white/30 tracking-widest mb-4">GROUP STANDINGS</p>
 
       <div className="flex gap-2 flex-wrap mb-4">
-        {Object.keys(groups).map(g => (
+        {Object.keys(groups).sort().map(g => (
           <button
             key={g}
             onClick={() => setActive(g)}
@@ -27,7 +74,7 @@ export default function GroupTable() {
                 : 'text-white/40 border-white/15 hover:text-white'
             }`}
           >
-            {g}
+            {g.replace('Group ', '')}
           </button>
         ))}
       </div>
@@ -43,7 +90,7 @@ export default function GroupTable() {
           </tr>
         </thead>
         <tbody>
-          {groups[active].map((t, i) => (
+          {displayGroup.map((t, i) => (
             <tr key={t.n} className={`border-b border-white/5 last:border-0 ${i < 2 ? 'border-l-2 border-l-[#1D9E75]' : ''}`}>
               <td className="py-2 px-1 text-xs text-white/25">{i + 1}</td>
               <td className="py-2 px-1 text-xs text-white/80">{t.n}</td>

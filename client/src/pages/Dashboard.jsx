@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import StatCard from '../components/StatCard'
 import MatchCard from '../components/MatchCard'
 import GroupTable from '../components/GroupTable'
@@ -6,15 +6,42 @@ import TopScorers from '../components/TopScorers'
 import LatestNews from '../components/LatestNews'
 import MatchDetailsModal from '../components/MatchDetailsModal'
 
-const matches = [
-    { id: 1, home: 'Argentina', away: 'France', score: '2 — 1', status: 'live', time: '74', group: 'Group B', homeFlag: '🇦🇷', awayFlag: '🇫🇷' },
-    { id: 2, home: 'Spain', away: 'England', score: '1 — 1', status: 'live', time: '62', group: 'Group C', homeFlag: '🇪🇸', awayFlag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
-    { id: 3, home: 'Portugal', away: 'Netherlands', score: null, status: 'upcoming', time: '18:00', group: 'Group D', homeFlag: '🇵🇹', awayFlag: '🇳🇱' },
-    { id: 4, home: 'USA', away: 'Mexico', score: null, status: 'upcoming', time: '21:00', group: 'Group A', homeFlag: '🇺🇸', awayFlag: '🇲🇽' },
-]
-
 export default function Dashboard() {
     const [selectedMatch, setSelectedMatch] = useState(null)
+    const [matches, setMatches] = useState([])
+    const [loading, setLoading] = useState(true)
+
+    const fetchMatches = () => {
+        fetch('http://localhost:5000/api/matches')
+            .then(res => res.json())
+            .then(data => {
+                const formatted = data.map(m => ({
+                    id: m._id,
+                    home: m.homeTeam,
+                    away: m.awayTeam,
+                    score: m.homeScore !== null ? `${m.homeScore} — ${m.awayScore}` : null,
+                    status: m.status,
+                    time: m.status === 'upcoming' 
+                      ? new Date(m.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+                      : 'Live',
+                    group: m.group || m.stage,
+                    homeFlag: m.homeFlag,
+                    awayFlag: m.awayFlag
+                }))
+                setMatches(formatted.slice(0, 4)) // Show only first 4
+                setLoading(false)
+            })
+            .catch(err => {
+                console.error('Failed to fetch matches:', err)
+                setLoading(false)
+            })
+    }
+
+    useEffect(() => {
+        fetchMatches() // Initial fetch
+        const interval = setInterval(fetchMatches, 10000) // Poll every 10 seconds
+        return () => clearInterval(interval)
+    }, [])
 
     return (
         <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-5 max-w-none w-full relative">

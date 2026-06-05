@@ -1,21 +1,23 @@
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export default function Teams() {
   const navigate = useNavigate()
-  const teams = [
-    { id: 'arg', name: 'Argentina', flag: '🇦🇷', rank: 1, group: 'Group B', pts: 4, form: ['W', 'D'] },
-    { id: 'fra', name: 'France', flag: '🇫🇷', rank: 2, group: 'Group B', pts: 6, form: ['W', 'W'] },
-    { id: 'bra', name: 'Brazil', flag: '🇧🇷', rank: 3, group: 'Group A', pts: 6, form: ['W', 'W'] },
-    { id: 'eng', name: 'England', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', rank: 4, group: 'Group C', pts: 4, form: ['W', 'D'] },
-    { id: 'esp', name: 'Spain', flag: '🇪🇸', rank: 5, group: 'Group C', pts: 5, form: ['W', 'W'] },
-    { id: 'por', name: 'Portugal', flag: '🇵🇹', rank: 6, group: 'Group D', pts: 6, form: ['W', 'W'] },
-    { id: 'ned', name: 'Netherlands', flag: '🇳🇱', rank: 7, group: 'Group D', pts: 3, form: ['W', 'L'] },
-    { id: 'usa', name: 'USA', flag: '🇺🇸', rank: 11, group: 'Group E', pts: 4, form: ['W', 'D'] },
-    { id: 'mex', name: 'Mexico', flag: '🇲🇽', rank: 14, group: 'Group A', pts: 1, form: ['D', 'L'] },
-    { id: 'ger', name: 'Germany', flag: '🇩🇪', rank: 16, group: 'Group A', pts: 3, form: ['W', 'L'] },
-    { id: 'jpn', name: 'Japan', flag: '🇯🇵', rank: 17, group: 'Group A', pts: 2, form: ['D', 'D'] },
-    { id: 'mar', name: 'Morocco', flag: '🇲🇦', rank: 13, group: 'Group A', pts: 0, form: ['L', 'L'] },
-  ]
+  const [teams, setTeams] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/teams')
+      .then(res => res.json())
+      .then(data => {
+        setTeams(data)
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error('Failed to fetch teams:', err)
+        setLoading(false)
+      })
+  }, [])
 
   return (
     <div className="p-6 max-w-none w-full">
@@ -48,7 +50,7 @@ export default function Teams() {
             <div className="flex items-start justify-between mb-4">
               <div className="text-4xl filter drop-shadow-lg">{team.flag}</div>
               <div className="bg-white/5 border border-white/5 px-2 py-1 rounded text-[10px] text-white/40 font-mono">
-                FIFA #{team.rank}
+                FIFA #{team.fifaRank}
               </div>
             </div>
             
@@ -57,11 +59,11 @@ export default function Teams() {
             
             <div className="flex items-center justify-between pt-4 border-t border-white/5">
               <div className="flex items-center gap-1.5">
-                {team.form.map((res, i) => (
+                {team.stats?.form?.map((res, i) => (
                   <span key={i} className={`w-2 h-2 rounded-full ${res === 'W' ? 'bg-[#1D9E75]' : res === 'D' ? 'bg-white/20' : 'bg-red-500/80'}`}></span>
                 ))}
               </div>
-              <span className="text-sm font-medium text-white/80">{team.pts} pts</span>
+              <span className="text-sm font-medium text-white/80">{team.stats?.points || 0} pts</span>
             </div>
           </div>
         ))}

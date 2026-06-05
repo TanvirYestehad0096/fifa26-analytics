@@ -1,14 +1,27 @@
+import { useState, useEffect } from 'react'
+
 export default function Venues() {
-  const venues = [
-    { name: 'MetLife Stadium', city: 'New York/New Jersey, USA', capacity: '82,500', matches: 8, isFinal: true, image: '🏟️' },
-    { name: 'Estadio Azteca', city: 'Mexico City, Mexico', capacity: '83,264', matches: 5, isFinal: false, image: '🏛️' },
-    { name: 'AT&T Stadium', city: 'Dallas, USA', capacity: '80,000', matches: 9, isFinal: false, image: '🏟️' },
-    { name: 'SoFi Stadium', city: 'Los Angeles, USA', capacity: '70,240', matches: 8, isFinal: false, image: '🏟️' },
-    { name: 'BMO Field', city: 'Toronto, Canada', capacity: '30,000', matches: 6, isFinal: false, image: '🍁' },
-    { name: 'Mercedes-Benz Stadium', city: 'Atlanta, USA', capacity: '71,000', matches: 8, isFinal: false, image: '🏟️' },
-    { name: 'Estadio Akron', city: 'Guadalajara, Mexico', capacity: '49,850', matches: 4, isFinal: false, image: '🌵' },
-    { name: 'BC Place', city: 'Vancouver, Canada', capacity: '54,500', matches: 7, isFinal: false, image: '🍁' },
-  ]
+  const [venues, setVenues] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/venues')
+      .then(res => res.json())
+      .then(data => {
+        // Add emoji placeholders for image if none exists
+        const withImages = data.map(v => ({
+          ...v,
+          image: v.imageUrl || '🏟️',
+          isFinal: v.name.includes('MetLife') || v.name.includes('Azteca') // Simple logic to flag final hosts
+        }))
+        setVenues(withImages)
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error('Failed to fetch venues:', err)
+        setLoading(false)
+      })
+  }, [])
 
   return (
     <div className="p-6 max-w-none w-full">

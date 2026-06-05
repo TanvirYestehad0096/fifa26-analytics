@@ -1,19 +1,21 @@
+import { useState, useEffect } from 'react'
+
 export default function Bracket() {
-  const rounds = [
+  const [rounds, setRounds] = useState([
     {
       name: 'Round of 16',
       matches: [
-        { t1: 'Argentina', s1: 2, t2: 'France', s2: 1, winner: 'Argentina' },
-        { t1: 'Spain', s1: 1, t2: 'England', s2: 0, winner: 'Spain' },
-        { t1: 'Brazil', s1: 3, t2: 'Germany', s2: 1, winner: 'Brazil' },
-        { t1: 'Portugal', s1: 2, t2: 'Netherlands', s2: 0, winner: 'Portugal' },
+        { t1: 'TBD', s1: null, t2: 'TBD', s2: null },
+        { t1: 'TBD', s1: null, t2: 'TBD', s2: null },
+        { t1: 'TBD', s1: null, t2: 'TBD', s2: null },
+        { t1: 'TBD', s1: null, t2: 'TBD', s2: null },
       ]
     },
     {
       name: 'Quarter-Finals',
       matches: [
-        { t1: 'Argentina', s1: null, t2: 'Spain', s2: null },
-        { t1: 'Brazil', s1: null, t2: 'Portugal', s2: null },
+        { t1: 'TBD', s1: null, t2: 'TBD', s2: null },
+        { t1: 'TBD', s1: null, t2: 'TBD', s2: null },
       ]
     },
     {
@@ -28,7 +30,33 @@ export default function Bracket() {
         { t1: 'TBD', s1: null, t2: 'TBD', s2: null },
       ]
     }
-  ]
+  ])
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/matches')
+      .then(res => res.json())
+      .then(data => {
+        // Group matches by stage
+        const ro16 = data.filter(m => m.stage === 'Round of 16')
+        
+        // Update the state with actual matches if they exist
+        setRounds(prev => {
+          const updated = [...prev]
+          if (ro16.length > 0) {
+            const mappedRo16 = ro16.map(m => ({
+              t1: m.homeTeam, s1: m.homeScore,
+              t2: m.awayTeam, s2: m.awayScore,
+              winner: m.homeScore > m.awayScore ? m.homeTeam : m.homeScore < m.awayScore ? m.awayTeam : null
+            }))
+            // Fill remaining slots
+            while (mappedRo16.length < 4) mappedRo16.push({ t1: 'TBD', s1: null, t2: 'TBD', s2: null })
+            updated[0].matches = mappedRo16
+          }
+          return updated
+        })
+      })
+      .catch(err => console.error('Failed to fetch bracket matches:', err))
+  }, [])
 
   return (
     <div className="p-6 max-w-none w-full h-full flex flex-col">
