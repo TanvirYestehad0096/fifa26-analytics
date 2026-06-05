@@ -1,4 +1,11 @@
+import { NavLink } from 'react-router-dom'
+
 export default function Navbar() {
+  const linkClass = ({ isActive }) => 
+    isActive 
+      ? "text-white font-medium border-b border-[#1D9E75] pb-0.5" 
+      : "cursor-pointer hover:text-white transition-colors"
+
   return (
     <nav className="flex items-center justify-between px-6 py-4 border-b border-white/10">
       <div className="flex items-center gap-3">
@@ -11,10 +18,10 @@ export default function Navbar() {
         </span>
       </div>
       <div className="flex gap-6 text-sm text-white/40">
-        <span className="text-white font-medium border-b border-[#1D9E75] pb-0.5 cursor-pointer">Dashboard</span>
-        <span className="cursor-pointer hover:text-white">Bracket</span>
-        <span className="cursor-pointer hover:text-white">Teams</span>
-        <span className="cursor-pointer hover:text-white">Venues</span>
+        <NavLink to="/" end className={linkClass}>Dashboard</NavLink>
+        <span className="cursor-pointer hover:text-white transition-colors">Bracket</span>
+        <NavLink to="/teams" className={linkClass}>Teams</NavLink>
+        <NavLink to="/venues" className={linkClass}>Venues</NavLink>
       </div>
     </nav>
   )
