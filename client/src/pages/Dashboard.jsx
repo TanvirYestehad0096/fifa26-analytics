@@ -5,6 +5,7 @@ import GroupTable from '../components/GroupTable'
 import TopScorers from '../components/TopScorers'
 import LatestNews from '../components/LatestNews'
 import MatchDetailsModal from '../components/MatchDetailsModal'
+import { API_URL } from '../config'
 
 export default function Dashboard() {
     const [selectedMatch, setSelectedMatch] = useState(null)
@@ -12,7 +13,7 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(true)
 
     const fetchMatches = () => {
-        fetch('http://localhost:5000/api/matches')
+        fetch(`${API_URL}/matches`)
             .then(res => res.json())
             .then(data => {
                 const formatted = data.map(m => ({

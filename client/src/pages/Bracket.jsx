@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { API_URL } from '../config'
 
 export default function Bracket() {
   const [rounds, setRounds] = useState([
@@ -33,7 +34,7 @@ export default function Bracket() {
   ])
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/matches')
+    fetch(`${API_URL}/matches`)
       .then(res => res.json())
       .then(data => {
         // Group matches by stage

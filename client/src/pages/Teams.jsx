@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { API_URL } from '../config'
 
 export default function Teams() {
   const navigate = useNavigate()
@@ -7,7 +8,7 @@ export default function Teams() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/teams')
+    fetch(`${API_URL}/teams`)
       .then(res => res.json())
       .then(data => {
         setTeams(data)

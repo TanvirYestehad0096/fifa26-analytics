@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
+import { API_URL } from '../config'
 
 export default function Venues() {
   const [venues, setVenues] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/venues')
+    fetch(`${API_URL}/venues`)
       .then(res => res.json())
       .then(data => {
         // Add emoji placeholders for image if none exists

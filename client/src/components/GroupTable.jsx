@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { API_URL } from '../config'
 
 export default function GroupTable() {
   const [active, setActive] = useState('Group A')
@@ -6,7 +7,7 @@ export default function GroupTable() {
   const [loading, setLoading] = useState(true)
 
   const fetchTeams = () => {
-    fetch('http://localhost:5000/api/teams')
+    fetch(`${API_URL}/teams`)
       .then(res => res.json())
       .then(data => {
         const grouped = {}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { API_URL } from '../config'
 
 export default function TeamDetails() {
   const { id } = useParams()
@@ -8,7 +9,7 @@ export default function TeamDetails() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/teams/${id}`)
+    fetch(`${API_URL}/teams/${id}`)
       .then(res => res.json())
       .then(data => {
         setTeam(data)
