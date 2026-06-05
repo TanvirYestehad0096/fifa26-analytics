@@ -3,6 +3,8 @@ import Navbar from './components/Navbar'
 import Dashboard from './pages/Dashboard'
 import Teams from './pages/Teams'
 import Venues from './pages/Venues'
+import Bracket from './pages/Bracket'
+import TeamDetails from './pages/TeamDetails'
 
 function Layout() {
   return (
@@ -20,7 +22,9 @@ export default function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="teams" element={<Teams />} />
+          <Route path="teams/:id" element={<TeamDetails />} />
           <Route path="venues" element={<Venues />} />
+          <Route path="bracket" element={<Bracket />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -19,7 +19,7 @@ export default function Navbar() {
       </div>
       <div className="flex gap-6 text-sm text-white/40">
         <NavLink to="/" end className={linkClass}>Dashboard</NavLink>
-        <span className="cursor-pointer hover:text-white transition-colors">Bracket</span>
+        <NavLink to="/bracket" className={linkClass}>Bracket</NavLink>
         <NavLink to="/teams" className={linkClass}>Teams</NavLink>
         <NavLink to="/venues" className={linkClass}>Venues</NavLink>
       </div>

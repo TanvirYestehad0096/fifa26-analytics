@@ -1,10 +1,13 @@
-export default function MatchCard({ home, away, score, status, time, group }) {
+export default function MatchCard({ home, away, score, status, time, group, onClick }) {
   const isLive = status === 'live'
 
   return (
-    <div className={`grid grid-cols-3 items-center gap-3 p-4 rounded-xl border ${
-      isLive ? 'border-[#1D9E75]/30 bg-[#0d1812]' : 'border-white/5 bg-[#0a0c10]'
-    }`}>
+    <div 
+      onClick={onClick}
+      className={`grid grid-cols-3 items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all hover:scale-[1.02] ${
+        isLive ? 'border-[#1D9E75]/30 bg-[#0d1812] hover:border-[#1D9E75]/60' : 'border-white/5 bg-[#0a0c10] hover:border-white/20'
+      }`}
+    >
       <div className="flex items-center gap-3">
         <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center text-xs font-medium">
           {home.slice(0,3).toUpperCase()}

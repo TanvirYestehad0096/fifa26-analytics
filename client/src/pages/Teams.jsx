@@ -1,17 +1,20 @@
+import { useNavigate } from 'react-router-dom'
+
 export default function Teams() {
+  const navigate = useNavigate()
   const teams = [
-    { name: 'Argentina', flag: '🇦🇷', rank: 1, group: 'Group B', pts: 4, form: ['W', 'D'] },
-    { name: 'France', flag: '🇫🇷', rank: 2, group: 'Group B', pts: 6, form: ['W', 'W'] },
-    { name: 'Brazil', flag: '🇧🇷', rank: 3, group: 'Group A', pts: 6, form: ['W', 'W'] },
-    { name: 'England', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', rank: 4, group: 'Group C', pts: 4, form: ['W', 'D'] },
-    { name: 'Spain', flag: '🇪🇸', rank: 5, group: 'Group C', pts: 5, form: ['W', 'W'] },
-    { name: 'Portugal', flag: '🇵🇹', rank: 6, group: 'Group D', pts: 6, form: ['W', 'W'] },
-    { name: 'Netherlands', flag: '🇳🇱', rank: 7, group: 'Group D', pts: 3, form: ['W', 'L'] },
-    { name: 'USA', flag: '🇺🇸', rank: 11, group: 'Group E', pts: 4, form: ['W', 'D'] },
-    { name: 'Mexico', flag: '🇲🇽', rank: 14, group: 'Group A', pts: 1, form: ['D', 'L'] },
-    { name: 'Germany', flag: '🇩🇪', rank: 16, group: 'Group A', pts: 3, form: ['W', 'L'] },
-    { name: 'Japan', flag: '🇯🇵', rank: 17, group: 'Group A', pts: 2, form: ['D', 'D'] },
-    { name: 'Morocco', flag: '🇲🇦', rank: 13, group: 'Group A', pts: 0, form: ['L', 'L'] },
+    { id: 'arg', name: 'Argentina', flag: '🇦🇷', rank: 1, group: 'Group B', pts: 4, form: ['W', 'D'] },
+    { id: 'fra', name: 'France', flag: '🇫🇷', rank: 2, group: 'Group B', pts: 6, form: ['W', 'W'] },
+    { id: 'bra', name: 'Brazil', flag: '🇧🇷', rank: 3, group: 'Group A', pts: 6, form: ['W', 'W'] },
+    { id: 'eng', name: 'England', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', rank: 4, group: 'Group C', pts: 4, form: ['W', 'D'] },
+    { id: 'esp', name: 'Spain', flag: '🇪🇸', rank: 5, group: 'Group C', pts: 5, form: ['W', 'W'] },
+    { id: 'por', name: 'Portugal', flag: '🇵🇹', rank: 6, group: 'Group D', pts: 6, form: ['W', 'W'] },
+    { id: 'ned', name: 'Netherlands', flag: '🇳🇱', rank: 7, group: 'Group D', pts: 3, form: ['W', 'L'] },
+    { id: 'usa', name: 'USA', flag: '🇺🇸', rank: 11, group: 'Group E', pts: 4, form: ['W', 'D'] },
+    { id: 'mex', name: 'Mexico', flag: '🇲🇽', rank: 14, group: 'Group A', pts: 1, form: ['D', 'L'] },
+    { id: 'ger', name: 'Germany', flag: '🇩🇪', rank: 16, group: 'Group A', pts: 3, form: ['W', 'L'] },
+    { id: 'jpn', name: 'Japan', flag: '🇯🇵', rank: 17, group: 'Group A', pts: 2, form: ['D', 'D'] },
+    { id: 'mar', name: 'Morocco', flag: '🇲🇦', rank: 13, group: 'Group A', pts: 0, form: ['L', 'L'] },
   ]
 
   return (
@@ -37,7 +40,11 @@ export default function Teams() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         {teams.map((team, index) => (
-          <div key={index} className="bg-[#11141a] border border-white/10 rounded-2xl p-5 hover:border-[#1D9E75]/40 transition-all cursor-pointer group hover:-translate-y-1">
+          <div 
+            key={index} 
+            onClick={() => navigate(`/teams/${team.id}`)}
+            className="bg-[#11141a] border border-white/10 rounded-2xl p-5 hover:border-[#1D9E75]/40 transition-all cursor-pointer group hover:-translate-y-1"
+          >
             <div className="flex items-start justify-between mb-4">
               <div className="text-4xl filter drop-shadow-lg">{team.flag}</div>
               <div className="bg-white/5 border border-white/5 px-2 py-1 rounded text-[10px] text-white/40 font-mono">
